@@ -28,10 +28,10 @@ def stocko():
 	for line in lines:
 		line = line.rstrip()
 		line = line.strip()
-		d = line +" : " + str(count(line)) + "\n"
+		d = line +"		:		" + str(count(line)) + "\n"
 		q = q + d
 	lines.close()
-	return q
+	return "**"+q+"**"
 
 def generate(name):
 	if count(name) == "0" :
@@ -41,20 +41,18 @@ def generate(name):
 	else:
 		return ok
 def ho(name):
-	print("option A")
 	f = open(f"accounts\\{name}.txt")
 	b = f.readline()
 	lines = f.readlines()
 	f = open(f"accounts\\{name}.txt", "w")
 	f.writelines(lines)
-	return(b)
+	return "**"+ b + "**"
 def one(name):
-	print("option b")
 	f = open(f"accounts\\{name}.txt")
 	b = f.readline()
 	f = open(f"accounts\\{name}.txt", "w")
 	f.writelines("")
-	return(b)
+	return "**"+b+"**"
 def compare(name):
 	lines = open("names.txt","r")
 	for line in lines:
@@ -71,43 +69,63 @@ def compare(name):
 async def on_ready():
     print('Ready to generate')
 a = []
+
+
+
+
+
+
+
 @commands. has_permissions(administrator=True)
 @bot.command()
 async def add(ctx,arg=None):
+	mention = ctx.author.mention
 	if arg == None:
-		embed=discord.Embed(title="ERROR", description="you have to put what type you want to add", color=0x9b1900)
+		embed=discord.Embed(title="ERROR", description=f"**{mention}you have to put what type you want to add**", color=0x9b1900)
 		await ctx.send(embed=embed)
 	else:
 		x = open(f"accounts\\{arg}.txt","w")
 		x.close()
 		x = open("names.txt", "a")
 		x.write(f"\n{arg}")
-		embed=discord.Embed(title="SUCCES", description=f"{arg} has successfully added on the name list", color=0x9b1900)
+		embed=discord.Embed(title="SUCCES", description=f"**{arg} has successfully added on the name list**", color=0x9b1900)
 		await ctx.send(embed=embed)
+@add.error
+async def add_error(ctx,error):
+    if isinstance(error, commands.MissingPermissions):
+    	mention = ctx.author.mention
+    	embed=discord.Embed(title="ERROR", description=f"**Sorry {mention}, you do not have permissions to do that!**", color=0x9b1900)
+    	await ctx.send(embed=embed)
 @bot.command()
 async def stock(ctx):
-    embed=discord.Embed(title="Stock", description=stocko(), color=0x9b1900)
-    await ctx.send(embed=embed)
+	embed=discord.Embed(title="Stock", description=stocko(), color=0x9b1900)
+	await ctx.send(embed=embed)
 @bot.command()
 async def gen(ctx,arg=None):
+	mention = ctx.author.mention
 	if arg == None:
-		embed=discord.Embed(title=f"ERROR", description=f"You need to specify the type of accounts you want to generate (EX: /gen netflix)", color=0x9b1900)
+		embed=discord.Embed(title=f"ERROR", description=f"**{mention}You need to specify the type of accounts you want to generate (EX: /gen netflix)**", color=0x9b1900)
 		await ctx.send(embed=embed)
 	else:
 		if compare(arg) == "available":
 			if count(arg) == "0":
-				embed=discord.Embed(title=f"{arg.upper()}", description=f"there is actually no {arg} accounts for the moment", color=0x9b1900)
-				await ctx.author.send(embed=embed)
+				embed=discord.Embed(title=f"{arg.upper()}", description=f"**Sorry {mention}, there is actually no {arg} accounts for the moment**", color=0x9b1900)
+				await ctx.send(embed=embed)
 
 			elif count(arg) == "1":
 				embed=discord.Embed(title=f"{arg.upper()}", description=one(arg), color=0x9b1900)
 				await ctx.author.send(embed=embed)
+				embed=discord.Embed(title=f"{arg.upper()}", description=f"**{mention}, your {arg} account has been sent to you in the dm's**", color=0x9b1900)
+				await ctx.send(embed=embed)
+
 
 			else:
 				embed=discord.Embed(title=f"{arg.upper()}", description=ho(arg), color=0x9b1900)
 				await ctx.author.send(embed=embed)
+				embed=discord.Embed(title=f"{arg.upper()}", description=f"**{mention}, your {arg} account has been sent to you in the dm's**", color=0x9b1900)
+				await ctx.send(embed=embed)
 		elif compare(arg) == "unavailable":
-			embed=discord.Embed(title="error", description="the type of accounts that you want to generate does not exist. Use /stock to see what is available", color=0x9b1900)
+			embed=discord.Embed(title="error", description=f"Sorry {mention}, the type of accounts that you want to generate does not exist. Use /stock to see what is available", color=0x9b1900)
 			await ctx.send(embed=embed)
 		else:
 			print("error")

@@ -71,7 +71,7 @@ def compare(name):
 async def on_ready():
     print('Ready to generate')
 a = []
-
+@commands. has_permissions(administrator=True)
 @bot.command()
 async def add(ctx,arg=None):
 	if arg == None:

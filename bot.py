@@ -1,7 +1,16 @@
 import discord
 from discord.ext import commands
 from discord_components import Button, Select, SelectOption, ComponentsBot, interaction
-token = input("what is the token for the bot")
+try:
+	n = open("token.txt", "r")
+	token = n.readline()
+except:
+	token = input("what is the token for the bot \n")
+	n = open("token.txt", "a")
+	n.close()
+	n = open("token.txt", "w")
+	n.write(token)
+	n.close()
 bot = ComponentsBot('/', help_command=None)
 def count(name):
 	lines = open(f"accounts\\{name}.txt", 'r')
@@ -57,9 +66,8 @@ def compare(name):
 
 @bot.event
 async def on_ready():
-    print('Ready to support ✅')
+    print('Ready to generate')
 a = []
-
 
 
 @bot.command()
@@ -67,24 +75,28 @@ async def stock(ctx):
     embed=discord.Embed(title="Stock", description=stocko(), color=0x9b1900)
     await ctx.send(embed=embed)
 @bot.command()
-async def gen(ctx,arg):
-	if compare(arg) == "available":
-		if count(arg) == "0":
-			embed=discord.Embed(title=f"{arg.upper()}", description=f"there is actually no {arg} accounts for the moment", color=0x9b1900)
-			await ctx.author.send(embed=embed)
-
-		elif count(arg) == "1":
-			embed=discord.Embed(title=f"{arg.upper()}", description=one(arg), color=0x9b1900)
-			await ctx.author.send(embed=embed)
-
-		else:
-			embed=discord.Embed(title=f"{arg.upper()}", description=ho(arg), color=0x9b1900)
-			await ctx.author.send(embed=embed)
-	elif compare(arg) == "unavailable":
-		embed=discord.Embed(title="error", description="the account that you want to generate does not exist. Use /stock to see what is available", color=0x9b1900)
+async def gen(ctx,arg=None):
+	if arg == None:
+		embed=discord.Embed(title=f"ERROR", description=f"You need to specify the type of accounts you want to generate (EX: /gen netflix)", color=0x9b1900)
 		await ctx.send(embed=embed)
 	else:
-		print("error")
+		if compare(arg) == "available":
+			if count(arg) == "0":
+				embed=discord.Embed(title=f"{arg.upper()}", description=f"there is actually no {arg} accounts for the moment", color=0x9b1900)
+				await ctx.author.send(embed=embed)
+
+			elif count(arg) == "1":
+				embed=discord.Embed(title=f"{arg.upper()}", description=one(arg), color=0x9b1900)
+				await ctx.author.send(embed=embed)
+
+			else:
+				embed=discord.Embed(title=f"{arg.upper()}", description=ho(arg), color=0x9b1900)
+				await ctx.author.send(embed=embed)
+		elif compare(arg) == "unavailable":
+			embed=discord.Embed(title="error", description="the type of accounts that you want to generate does not exist. Use /stock to see what is available", color=0x9b1900)
+			await ctx.send(embed=embed)
+		else:
+			print("error")
 
 
 bot.run(token)

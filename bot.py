@@ -103,32 +103,36 @@ async def stock(ctx):
 @bot.command()
 async def gen(ctx,arg=None):
 	mention = ctx.author.mention
-	if arg == None:
-		embed=discord.Embed(title=f"ERROR", description=f"**{mention}You need to specify the type of accounts you want to generate (EX: /gen netflix)**", color=0x9b1900)
+	if ctx.channel.type == discord.ChannelType.private:
+		embed=discord.Embed(title="ERROR", description="**Sorry you have no right to generate in dm's**", color=0x9b1900)
 		await ctx.send(embed=embed)
 	else:
-		if compare(arg) == "available":
-			if count(arg) == "0":
-				embed=discord.Embed(title=f"{arg.upper()}", description=f"**Sorry {mention}, there is actually no {arg} accounts for the moment**", color=0x9b1900)
-				await ctx.send(embed=embed)
-
-			elif count(arg) == "1":
-				embed=discord.Embed(title=f"{arg.upper()}", description=one(arg), color=0x9b1900)
-				await ctx.author.send(embed=embed)
-				embed=discord.Embed(title=f"{arg.upper()}", description=f"**{mention}, your {arg} account has been sent to you in the dm's**", color=0x9b1900)
-				await ctx.send(embed=embed)
-
-
-			else:
-				embed=discord.Embed(title=f"{arg.upper()}", description=ho(arg), color=0x9b1900)
-				await ctx.author.send(embed=embed)
-				embed=discord.Embed(title=f"{arg.upper()}", description=f"**{mention}, your {arg} account has been sent to you in the dm's**", color=0x9b1900)
-				await ctx.send(embed=embed)
-		elif compare(arg) == "unavailable":
-			embed=discord.Embed(title="error", description=f"Sorry {mention}, the type of accounts that you want to generate does not exist. Use /stock to see what is available", color=0x9b1900)
+		if arg == None:
+			embed=discord.Embed(title=f"ERROR", description=f"**{mention}You need to specify the type of accounts you want to generate (EX: /gen netflix)**", color=0x9b1900)
 			await ctx.send(embed=embed)
 		else:
-			print("error")
+			if compare(arg) == "available":
+				if count(arg) == "0":
+					embed=discord.Embed(title=f"{arg.upper()} ACCOUNT:", description=f"**Sorry {mention}, there is actually no {arg} accounts for the moment**", color=0x9b1900)
+					await ctx.send(embed=embed)
+
+				elif count(arg) == "1":
+					embed=discord.Embed(title=f"{arg.upper()} ACCOUNT:", description=one(arg), color=0x9b1900)
+					await ctx.author.send(embed=embed)
+					embed=discord.Embed(title=f"{arg.upper()} ACCOUNT:", description=f"**{mention}, your {arg} account has been sent to you in the dm's**", color=0x9b1900)
+					await ctx.send(embed=embed)
+
+
+				else:
+					embed=discord.Embed(title=f"{arg.upper()} ACCOUNT:", description=ho(arg), color=0x9b1900)
+					await ctx.author.send(embed=embed)
+					embed=discord.Embed(title=f"{arg.upper()} ACCOUNT:", description=f"**{mention}, your {arg} account has been sent to you in the dm's**", color=0x9b1900)
+					await ctx.send(embed=embed)
+			elif compare(arg) == "unavailable":
+				embed=discord.Embed(title="error", description=f"Sorry {mention}, the type of accounts that you want to generate does not exist. Use /stock to see what is available", color=0x9b1900)
+				await ctx.send(embed=embed)
+			else:
+				print("error")
 
 
 bot.run(token)

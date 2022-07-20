@@ -30,6 +30,7 @@ def stocko():
 		line = line.strip()
 		d = line +" : " + str(count(line)) + "\n"
 		q = q + d
+	lines.close()
 	return q
 
 def generate(name):
@@ -60,7 +61,9 @@ def compare(name):
 		line = line.rstrip()
 		line = line.strip()
 		if name.lower() == line.lower():
+			lines.close()
 			return "available"
+	lines.close()
 	return "unavailable"
 
 
@@ -69,7 +72,18 @@ async def on_ready():
     print('Ready to generate')
 a = []
 
-
+@bot.command()
+async def add(ctx,arg=None):
+	if arg == None:
+		embed=discord.Embed(title="ERROR", description="you have to put what type you want to add", color=0x9b1900)
+		await ctx.send(embed=embed)
+	else:
+		x = open(f"accounts\\{arg}.txt","w")
+		x.close()
+		x = open("names.txt", "a")
+		x.write(f"\n{arg}")
+		embed=discord.Embed(title="SUCCES", description=f"{arg} has successfully added on the name list", color=0x9b1900)
+		await ctx.send(embed=embed)
 @bot.command()
 async def stock(ctx):
     embed=discord.Embed(title="Stock", description=stocko(), color=0x9b1900)

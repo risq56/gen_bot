@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
-from discord_components import Button, Select, SelectOption, ComponentsBot, interaction
+from discord import Option
+bot = commands.Bot()
+roleid = 999284677246459974
 try:
 	n = open("token.txt", "r")
 	token = n.readline()
@@ -11,7 +13,6 @@ except:
 	n = open("token.txt", "w")
 	n.write(token)
 	n.close()
-bot = ComponentsBot('/', help_command=None)
 def count(name):
 	lines = open(f"accounts\\{name}.txt", 'r')
 	x = 0
@@ -70,86 +71,72 @@ async def on_ready():
     print('Ready to generate')
 a = []
 
+@commands.has_permissions(administrator=True)
+@bot.slash_command()
 
-
-
-
-
-@commands. has_permissions(administrator=True)
-@bot.command()
-async def add(ctx,arg=None):
-	await ctx.message.delete()
+async def add(ctx,type: Option(str,"the type that you want to gen",required=True,default="netflix")):
+	arg = type
 	mention = ctx.author.mention
 	if arg == None:
 		embed=discord.Embed(title="ERROR", description=f"**{mention}you have to put what type you want to add**", color=0x9b1900)
-		await ctx.send(embed=embed, delete_after=5)
+		await ctx.respond(embed=embed, delete_after=5)
 	else:
 		x = open(f"accounts\\{arg}.txt","w")
 		x.close()
 		x = open("names.txt", "a")
 		x.write(f"\n{arg}")
-		embed=discord.Embed(title="SUCCES", description=f"**{arg} has successfully added on the name list**", color=0x9b1900)
-		await ctx.send(embed=embed, delete_after=5)
+		embed=discord.Embed(title="SUCCES", description=f"**{arg.upper()} has successfully added on the name list**", color=0x9b1900)
+		await ctx.respond(embed=embed, delete_after=5)
 @add.error
 async def add_error(ctx,error):
 	if isinstance(error, commands.MissingPermissions):
 		mention = ctx.author.mention
 		embed=discord.Embed(title="ERROR", description=f"**Sorry {mention}, you do not have permissions to do that!**", color=0x9b1900)
-		await ctx.send(embed=embed, delete_after=5)
-		await ctx.message.delete()
-@bot.command()
+		await ctx.respond(embed=embed, delete_after=5)
+@commands.has_role(roleid)
+@bot.slash_command()
 async def stock(ctx):
 	
 	embed=discord.Embed(title="Stock", description=stocko(), color=0x9b1900)
-	await ctx.send(embed=embed, delete_after=100)
-	await ctx.message.delete()
-@bot.command()
-async def gen(ctx,arg=None):
-	
+	await ctx.respond(embed=embed, delete_after=100)
+@commands.has_role(roleid)
+@bot.slash_command()
+async def gen(ctx,type: Option(str,"the type that you want to gen",required=True,default="netflix")):
+	arg = type
 	mention = ctx.author.mention
 	if ctx.channel.type == discord.ChannelType.private:
 		embed=discord.Embed(title="ERROR", description="**Sorry you have no right to generate in dm's**", color=0x9b1900)
-		await ctx.send(embed=embed, delete_after=5)
-		await ctx.message.delete()
+		await ctx.respond(embed=embed)
 	else:
-		await ctx.message.delete()
 		if arg == None:
 			embed=discord.Embed(title=f"ERROR", description=f"**{mention}You need to specify the type of accounts you want to generate (EX: /gen netflix)**", color=0x9b1900)
-			await ctx.send(embed=embed, delete_after=5)
+			await ctx.respond(embed=embed, delete_after=5)
 		else:
 			if compare(arg) == "available":
 				if count(arg) == "0":
 					embed=discord.Embed(title=f"{arg.upper()} ACCOUNT:", description=f"**Sorry {mention}, there is actually no {arg} accounts for the moment**", color=0x9b1900)
-					await ctx.send(embed=embed, delete_after=5)
+					await ctx.respond(embed=embed, delete_after=5)
 
 				elif count(arg) == "1":
 					embed=discord.Embed(title=f"{arg.upper()} ACCOUNT:", description=one(arg), color=0x9b1900)
-					await ctx.author.send(embed=embed, delete_after=20)
+					await ctx.author.respond(embed=embed, delete_after=20)
 					embed=discord.Embed(title=f"{arg.upper()} ACCOUNT:", description=f"**{mention}, your {arg} account has been sent to you in the dm's**", color=0x9b1900)
-					await ctx.send(embed=embed, delete_after=5)
+					await ctx.respond(embed=embed, delete_after=5)
 
 
 				else:
 					embed=discord.Embed(title=f"{arg.upper()} ACCOUNT:", description=ho(arg), color=0x9b1900)
-					await ctx.author.send(embed=embed, delete_after=20)
+					await ctx.author.respond(embed=embed, delete_after=20)
 					embed=discord.Embed(title=f"{arg.upper()} ACCOUNT:", description=f"**{mention}, your {arg} account has been sent to you in the dm's**", color=0x9b1900)
-					await ctx.send(embed=embed, delete_after=5)
+					await ctx.respond(embed=embed, delete_after=5)
 			elif compare(arg) == "unavailable":
 				embed=discord.Embed(title="error", description=f"Sorry {mention}, the type of accounts that you want to generate does not exist. Use /stock to see what is available", color=0x9b1900)
-				await ctx.send(embed=embed, delete_after=5)
+				await ctx.respond(embed=embed, delete_after=5)
 			else:
 				print("error")
-@bot.command()
+@commands.has_role(roleid)
+@bot.slash_command()
 async def help(ctx):
 	embed=discord.Embed(title="HELP", description=f"**/gen [account type] (EX: /gen netflix)\n/stock**", color=0x9b1900)
-	await ctx.send(embed=embed, delete_after=5)
-	await ctx.message.delete()
-@bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, commands.CommandNotFound):
-    	mention = ctx.author.mention
-    	embed=discord.Embed(title="ERROR", description=f"**{mention}, This command does not exist you should type /help to see all the commands**", color=0x9b1900)
-    	await ctx.send(embed=embed, delete_after=5)
-    	await ctx.message.delete()
-
+	await ctx.respond(embed=embed, delete_after=5)
 bot.run(token)

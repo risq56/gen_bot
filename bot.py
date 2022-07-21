@@ -72,7 +72,7 @@ async def on_ready():
 a = []
 
 @commands.has_permissions(administrator=True)
-@bot.slash_command()
+@bot.slash_command(description="lets you add more type of accounts (you need to have permissions for that)")
 
 async def add(ctx,type: Option(str,"the type that you want to gen",required=True,default="netflix")):
 	arg = type
@@ -94,13 +94,13 @@ async def add_error(ctx,error):
 		embed=discord.Embed(title="ERROR", description=f"**Sorry {mention}, you do not have permissions to do that!**", color=0x9b1900)
 		await ctx.respond(embed=embed, delete_after=5)
 @commands.has_role(roleid)
-@bot.slash_command()
+@bot.slash_command(description="lets you see the stock of the generator")
 async def stock(ctx):
 	
 	embed=discord.Embed(title="Stock", description=stocko(), color=0x9b1900)
 	await ctx.respond(embed=embed, delete_after=100)
 @commands.has_role(roleid)
-@bot.slash_command()
+@bot.slash_command(description="lets you generate any type of account")
 async def gen(ctx,type: Option(str,"the type that you want to gen",required=True,default="netflix")):
 	arg = type
 	mention = ctx.author.mention
@@ -135,7 +135,7 @@ async def gen(ctx,type: Option(str,"the type that you want to gen",required=True
 			else:
 				print("error")
 @commands.has_role(roleid)
-@bot.slash_command()
+@bot.slash_command(description="Help")
 async def help(ctx):
 	embed=discord.Embed(title="HELP", description=f"**/gen [account type] (EX: /gen netflix)\n/stock**", color=0x9b1900)
 	await ctx.respond(embed=embed, delete_after=5)
